@@ -6,11 +6,21 @@
                     <img src="/img/lock.png" class="login-card__icon" alt="" />
                     <h2>User Login</h2>
                 </div>
-                <form action="#">
+                <form action="#" @submit.prevent="handleSubmit">
                     <label class="block">Email</label>
-                    <input type="text" placeholder="Enter your email" />
+                    <input
+                        type="email"
+                        v-model="formData.email"
+                        placeholder="Enter your email"
+                        required
+                    />
                     <label class="block mt-3">Password</label>
-                    <input type="password" placeholder="Enter password" />
+                    <input
+                        type="password"
+                        v-model="formData.password"
+                        placeholder="Enter password"
+                        required
+                    />
                     <button type="submit" class="the-button w-100 mt-3">
                         Login
                     </button>
@@ -31,7 +41,31 @@
     </div>
 </template>
 <script>
-export default {};
+export default {
+    data: () => ({
+        formData: {
+            email: "",
+            password: "",
+        },
+    }),
+    methods: {
+        handleSubmit() {
+            console.log(this.formData);
+            if (!this.formData.email) {
+                // TODO: show error message on toast
+                alert("email can not be empty!");
+                return;
+            }
+            if (this.formData.password.length < 6) {
+                // alert("Password must be at least 6 characters long!");
+                // TODO: show error message on toast
+                alert("Password must be at least 6 characters long!");
+                return;
+            }
+            // TODO: Call API
+        },
+    },
+};
 </script>
 <style>
 .box {
@@ -49,7 +83,6 @@ export default {};
     height: 55px;
     background-color: greenyellow;
     margin-bottom: 22px;
-    /* animation: showhide 1s ease-in; */
 }
 .login-page {
     position: fixed;
@@ -64,7 +97,6 @@ export default {};
 }
 .login-card {
     width: 400px;
-    /* border: 1px solid gray; */
     min-height: 193px;
     box-shadow: 0px 2px 9px 4px #dfdfdf;
     background-color: #fff;
@@ -94,28 +126,9 @@ export default {};
 }
 .showhide-enter-active {
     animation: showhide 1s ease-in;
-    /* transition: all 0.5s; */
+    transition: all 0.5s;
 }
-.showhide-enter-from {
-    /* opacity: 0;
-  transform: scale(0.5); */
-}
-.showhide-enter-to {
-    /* opacity: 1;
-  transform: scale(1); */
-}
-.showhide-leave-active {
-    animation: showhide 1s ease-in reverse;
-    /* transition: all 0.5s; */
-}
-.showhide-leave-from {
-    /* opacity: 1;
-  transform: scale(1); */
-}
-.showhide-leave-to {
-    /* opacity: 0;
-  transform: scale(0.5); */
-}
+
 button {
     padding: 9px 22px;
     font-size: 15px;
