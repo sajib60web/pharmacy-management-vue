@@ -13,6 +13,7 @@
                         v-model="formData.email"
                         placeholder="Enter your email"
                         required
+                        ref="email"
                     />
                     <label class="block mt-3">Password</label>
                     <input
@@ -20,6 +21,7 @@
                         v-model="formData.password"
                         placeholder="Enter password"
                         required
+                        ref="password"
                     />
                     <button type="submit" class="the-button w-100 mt-3">
                         Login
@@ -53,13 +55,22 @@ export default {
             console.log(this.formData);
             if (!this.formData.email) {
                 // TODO: show error message on toast
-                alert("email can not be empty!");
+                // alert("email can not be empty!");
+                this.$eventBus.emit("toast", {
+                    type: "Error",
+                    message: "email can not be empty!",
+                });
+                this.$refs.email.focus();
                 return;
             }
             if (this.formData.password.length < 6) {
-                // alert("Password must be at least 6 characters long!");
                 // TODO: show error message on toast
-                alert("Password must be at least 6 characters long!");
+                // alert("Password must be at least 6 characters long!");
+                this.$eventBus.emit("toast", {
+                    type: "Error",
+                    message: "Password must be at least 6 characters long!",
+                });
+                this.$refs.password.focus();
                 return;
             }
             // TODO: Call API

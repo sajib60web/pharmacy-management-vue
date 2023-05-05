@@ -1,3 +1,4 @@
+import mitt from 'mitt';
 import { createApp } from "vue";
 import App from "./App.vue";
 
@@ -5,4 +6,9 @@ import App from "./App.vue";
 import "./assets/css/ayoflex.css";
 import "./assets/css/example.css";
 
-createApp(App).mount("#app");
+// mitt
+let eventBus = mitt();
+
+const app = createApp(App)
+app.config.globalProperties.$eventBus = eventBus;
+app.mount("#app");
