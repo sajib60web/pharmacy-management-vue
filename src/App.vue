@@ -1,5 +1,11 @@
 <template>
-    <header>
-        <h1>Welcome to pharmacy management</h1>
-    </header>
+    <login></login>
 </template>
+<script>
+import Login from "./components/Login.vue";
+export default {
+    components: {
+        Login,
+    },
+};
+</script>
