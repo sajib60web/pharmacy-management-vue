@@ -163,4 +163,7 @@ button {
     box-shadow: 0 2px 2px 1px #afafaf;
     border-radius: 3px;
 }
+input[type="email"] {
+    width: 100%;
+}
 </style>

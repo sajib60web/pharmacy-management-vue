@@ -1,13 +1,15 @@
 <template>
     <login></login>
-    <div class="toasts">
+    <!-- <div class="toasts"> -->
+    <TransitionGroup name="slide-left" tag="div" class="toasts">
         <the-toast
             v-for="(toast, i) in toasts"
             :key="i"
             :toastType="toast.type"
             :message="toast.message"
         ></the-toast>
-    </div>
+    </TransitionGroup>
+    <!-- </div> -->
 </template>
 <script>
 import Login from "./components/Login.vue";
@@ -18,20 +20,10 @@ export default {
         TheToast,
     },
     data: () => ({
-        toasts: [
-            // {
-            //     type: "Success",
-            //     message: "Done Successfully!",
-            // },
-            // {
-            //     type: "Error",
-            //     message: "Something went wrong!",
-            // },
-        ],
+        toasts: [],
     }),
     mounted() {
         this.$eventBus.on("toast", (data) => {
-            // console.log(data);
             this.toasts.push(data);
             this.removeOneToast();
         });
@@ -45,3 +37,14 @@ export default {
     },
 };
 </script>
+<style>
+.slide-left-enter-active,
+.slide-left-leave-active {
+    transition: all 0.25s ease;
+}
+.slide-left-enter-from,
+.slide-left-leave-to {
+    opacity: 0;
+    transform: translateX(100px);
+}
+</style>
