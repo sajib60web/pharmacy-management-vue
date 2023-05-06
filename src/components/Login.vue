@@ -2,6 +2,17 @@
     <div>
         <div class="login-page">
             <div class="login-card">
+                <!-- <div class="box" :class="{ 'box--right': movedToRight }"></div>
+                <button @click="movedToRight = false">Move Left</button>
+                <button class="ml-4" @click="movedToRight = true">
+                    Move Right
+                </button>
+                <hr class="mt-4" /> -->
+                <!-- <Transition name="showhide">
+                    <div class="box1 mt-4" v-if="showing"></div>
+                </Transition>
+                <button @click="showing = !showing">Show / Hide</button> -->
+
                 <div class="text-center">
                     <img src="/img/lock.png" class="login-card__icon" alt="" />
                     <h2>User Login</h2>
@@ -49,6 +60,8 @@ export default {
             email: "",
             password: "",
         },
+        movedToRight: false,
+        showing: false,
     }),
     methods: {
         handleSubmit() {
