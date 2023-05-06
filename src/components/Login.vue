@@ -24,12 +24,9 @@
                         required
                         ref="password"
                     />
-                    <p class="text-center mt-5" v-if="loggingIn">
-                        Logging in...
-                    </p>
-                    <button type="submit" class="the-button w-100 mt-3" v-else>
-                        Login
-                    </button>
+                    <the-button :block="true" :loading="loggingIn" class="mt-3"
+                        >Login</the-button
+                    >
                     <div class="d-flex jc-between mt-3">
                         <div>
                             <label>
@@ -47,8 +44,11 @@
     </div>
 </template>
 <script>
-import axios from "axios";
+import TheButton from "../components/TheButton.vue";
 export default {
+    components: {
+        TheButton,
+    },
     data: () => ({
         formData: {
             email: "",
@@ -80,28 +80,28 @@ export default {
             }
             // TODO: Call API
             this.loggingIn = true;
-            axios
-                .post(this.base_url + "login1", this.formData)
-                .then((res) => {
-                    this.$eventBus.emit("toast", {
-                        type: "Success",
-                        message: res.data.message,
-                    });
-                })
-                .catch((err) => {
-                    console.log(err);
-                    let errorMessage = "Something went wrong";
-                    if (err.response) {
-                        errorMessage = err.message;
-                    }
-                    this.$eventBus.emit("toast", {
-                        type: "Error",
-                        message: errorMessage,
-                    });
-                })
-                .finally(() => {
-                    this.loggingIn = false;
-                });
+            // axios
+            //     .post(this.base_url + "login1", this.formData)
+            //     .then((res) => {
+            //         this.$eventBus.emit("toast", {
+            //             type: "Success",
+            //             message: res.data.message,
+            //         });
+            //     })
+            //     .catch((err) => {
+            //         console.log(err);
+            //         let errorMessage = "Something went wrong";
+            //         if (err.response) {
+            //             errorMessage = err.message;
+            //         }
+            //         this.$eventBus.emit("toast", {
+            //             type: "Error",
+            //             message: errorMessage,
+            //         });
+            //     })
+            //     .finally(() => {
+            //         this.loggingIn = false;
+            //     });
         },
     },
 };
@@ -172,16 +172,5 @@ export default {
 .showhide-enter-active {
     animation: showhide 1s ease-in;
     transition: all 0.5s;
-}
-
-button {
-    padding: 9px 22px;
-    font-size: 15px;
-    background-color: var(--brand-color);
-    border: 1px solid var(--brand-color);
-    color: #fff;
-    cursor: pointer;
-    box-shadow: 0 2px 2px 1px #afafaf;
-    border-radius: 3px;
 }
 </style>
