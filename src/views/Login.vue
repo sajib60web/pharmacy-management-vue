@@ -44,6 +44,7 @@
     </div>
 </template>
 <script>
+import axios from "axios";
 import TheButton from "../components/TheButton.vue";
 export default {
     components: {
@@ -80,28 +81,40 @@ export default {
             }
             // TODO: Call API
             this.loggingIn = true;
-            // axios
-            //     .post(this.base_url + "login1", this.formData)
-            //     .then((res) => {
-            //         this.$eventBus.emit("toast", {
-            //             type: "Success",
-            //             message: res.data.message,
-            //         });
-            //     })
-            //     .catch((err) => {
-            //         console.log(err);
-            //         let errorMessage = "Something went wrong";
-            //         if (err.response) {
-            //             errorMessage = err.message;
-            //         }
-            //         this.$eventBus.emit("toast", {
-            //             type: "Error",
-            //             message: errorMessage,
-            //         });
-            //     })
-            //     .finally(() => {
-            //         this.loggingIn = false;
-            //     });
+            axios
+                .post(this.base_url + "login", this.formData)
+                .then((res) => {
+                    // console.log(res.data);
+                    if (res.data.status == true) {
+                        this.$eventBus.emit("toast", {
+                            type: "Success",
+                            message: res.data.message,
+                        });
+                        localStorage.setItem(
+                            "accessToken",
+                            res.data.accessToken
+                        );
+                        this.$router.push("/dashboard");
+                    }
+                    this.$eventBus.emit("toast", {
+                        type: "Error",
+                        message: res.data.message,
+                    });
+                })
+                .catch((err) => {
+                    console.log(err);
+                    let errorMessage = "Something went wrong";
+                    if (err.response) {
+                        errorMessage = err.message;
+                    }
+                    this.$eventBus.emit("toast", {
+                        type: "Error",
+                        message: errorMessage,
+                    });
+                })
+                .finally(() => {
+                    this.loggingIn = false;
+                });
         },
     },
 };

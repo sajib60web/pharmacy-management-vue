@@ -1,6 +1,5 @@
 <template>
-    <login></login>
-    <!-- <div class="toasts"> -->
+    <router-view></router-view>
     <TransitionGroup name="slide-left" tag="div" class="toasts">
         <the-toast
             v-for="(toast, i) in toasts"
@@ -9,14 +8,11 @@
             :message="toast.message"
         ></the-toast>
     </TransitionGroup>
-    <!-- </div> -->
 </template>
 <script>
-import Login from "./components/Login.vue";
 import TheToast from "./components/TheToast.vue";
 export default {
     components: {
-        Login,
         TheToast,
     },
     data: () => ({
