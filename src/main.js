@@ -11,4 +11,5 @@ let eventBus = mitt();
 
 const app = createApp(App)
 app.config.globalProperties.$eventBus = eventBus;
+app.config.globalProperties.base_url = 'http://127.0.0.1:8000/api/';
 app.mount("#app");

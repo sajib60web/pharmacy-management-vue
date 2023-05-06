@@ -2,17 +2,6 @@
     <div>
         <div class="login-page">
             <div class="login-card">
-                <!-- <div class="box" :class="{ 'box--right': movedToRight }"></div>
-                <button @click="movedToRight = false">Move Left</button>
-                <button class="ml-4" @click="movedToRight = true">
-                    Move Right
-                </button>
-                <hr class="mt-4" /> -->
-                <!-- <Transition name="showhide">
-                    <div class="box1 mt-4" v-if="showing"></div>
-                </Transition>
-                <button @click="showing = !showing">Show / Hide</button> -->
-
                 <div class="text-center">
                     <img src="/img/lock.png" class="login-card__icon" alt="" />
                     <h2>User Login</h2>
@@ -24,6 +13,7 @@
                         v-model="formData.email"
                         placeholder="Enter your email"
                         required
+                        autocomplete="email"
                         ref="email"
                     />
                     <label class="block mt-3">Password</label>
@@ -34,7 +24,10 @@
                         required
                         ref="password"
                     />
-                    <button type="submit" class="the-button w-100 mt-3">
+                    <p class="text-center mt-5" v-if="loggingIn">
+                        Logging in...
+                    </p>
+                    <button type="submit" class="the-button w-100 mt-3" v-else>
                         Login
                     </button>
                     <div class="d-flex jc-between mt-3">
@@ -54,18 +47,17 @@
     </div>
 </template>
 <script>
+import axios from "axios";
 export default {
     data: () => ({
         formData: {
             email: "",
             password: "",
         },
-        movedToRight: false,
-        showing: false,
+        loggingIn: false,
     }),
     methods: {
         handleSubmit() {
-            console.log(this.formData);
             if (!this.formData.email) {
                 // TODO: show error message on toast
                 // alert("email can not be empty!");
@@ -87,6 +79,29 @@ export default {
                 return;
             }
             // TODO: Call API
+            this.loggingIn = true;
+            axios
+                .post(this.base_url + "login1", this.formData)
+                .then((res) => {
+                    this.$eventBus.emit("toast", {
+                        type: "Success",
+                        message: res.data.message,
+                    });
+                })
+                .catch((err) => {
+                    console.log(err);
+                    let errorMessage = "Something went wrong";
+                    if (err.response) {
+                        errorMessage = err.message;
+                    }
+                    this.$eventBus.emit("toast", {
+                        type: "Error",
+                        message: errorMessage,
+                    });
+                })
+                .finally(() => {
+                    this.loggingIn = false;
+                });
         },
     },
 };
@@ -99,15 +114,18 @@ export default {
     margin-bottom: 22px;
     transition: all 0.5s;
 }
+
 .box--right {
     margin-left: 222px;
 }
+
 .box1 {
     width: 55px;
     height: 55px;
     background-color: greenyellow;
     margin-bottom: 22px;
 }
+
 .login-page {
     position: fixed;
     top: 0;
@@ -119,6 +137,7 @@ export default {
     align-items: center;
     background-color: rgb(235, 235, 235);
 }
+
 .login-card {
     width: 400px;
     min-height: 193px;
@@ -127,10 +146,12 @@ export default {
     border-radius: 5px;
     padding: 44px 33px;
 }
-.login-card input[type="text"],
+
+.login-card input[type="email"],
 .login-card input[type="password"] {
     width: 100%;
 }
+
 .login-card__icon {
     max-width: 77px;
 }
@@ -162,8 +183,5 @@ button {
     cursor: pointer;
     box-shadow: 0 2px 2px 1px #afafaf;
     border-radius: 3px;
-}
-input[type="email"] {
-    width: 100%;
 }
 </style>
