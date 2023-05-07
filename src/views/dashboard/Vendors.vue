@@ -103,6 +103,7 @@
 </template>
 <script>
 import axios from "axios";
+import privateService from "../../service/privateService";
 import { showErrorMessage, showSuccessMessage } from "../../utils/functions";
 import TheButton from "../../components/TheButton.vue";
 import TheModal from "../../components/TheModal.vue";
@@ -135,18 +136,13 @@ export default {
     methods: {
         getAllVendors() {
             this.gettingVendors = true;
-            axios
-                .get(this.base_url + "private/vendor", {
-                    headers: {
-                        authorization: localStorage.getItem("accessToken"),
-                    },
-                })
+            privateService
+                .getVendors()
                 .then((res) => {
-                    // console.log(res.data);
                     this.vendors = res.data;
                 })
                 .catch((err) => {
-                    // console.log(err);
+                    showErrorMessage(err);
                 })
                 .finally(() => {
                     this.gettingVendors = false;
@@ -155,12 +151,8 @@ export default {
 
         addNew() {
             this.adding = true;
-            axios
-                .post(this.base_url + "private/vendor/create", this.newVendor, {
-                    headers: {
-                        authorization: localStorage.getItem("accessToken"),
-                    },
-                })
+            privateService
+                .addVendor(this.newVendor)
                 .then((res) => {
                     if (res.data.status == true) {
                         showSuccessMessage(res.data.message);
@@ -181,18 +173,8 @@ export default {
 
         updateVendor() {
             this.editing = true;
-            axios
-                .post(
-                    this.base_url +
-                        "private/vendor/update/" +
-                        this.selectedVendor.id,
-                    this.selectedVendor,
-                    {
-                        headers: {
-                            authorization: localStorage.getItem("accessToken"),
-                        },
-                    }
-                )
+            privateService
+                .updateVendor(this.selectedVendor)
                 .then((res) => {
                     if (res.data.status == true) {
                         showSuccessMessage(res.data.message);
@@ -212,17 +194,8 @@ export default {
 
         deleteVendor() {
             this.deleting = true;
-            axios
-                .get(
-                    this.base_url +
-                        "private/vendor/delete/" +
-                        this.selectedVendor.id,
-                    {
-                        headers: {
-                            authorization: localStorage.getItem("accessToken"),
-                        },
-                    }
-                )
+            privateService
+                .deleteVendor(this.selectedVendor.id)
                 .then((res) => {
                     showSuccessMessage(res.data.message);
                     this.resetForm();
