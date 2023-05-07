@@ -130,8 +130,8 @@ export default {
         gettingVendors: false,
     }),
     mounted() {
-        // setTimeout(this.getAllVendors, 100);
-        this.getAllVendors();
+        setTimeout(this.getAllVendors, 100);
+        // this.getAllVendors();
     },
     methods: {
         getAllVendors() {
