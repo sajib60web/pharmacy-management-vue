@@ -12,8 +12,8 @@
                         type="email"
                         v-model="formData.email"
                         placeholder="Enter your email"
-                        required
                         autocomplete="email"
+                        required
                         ref="email"
                     />
                     <label class="block mt-3">Password</label>
@@ -45,6 +45,7 @@
 </template>
 <script>
 import axios from "axios";
+import { showErrorMessage, showSuccessMessage } from "../utils/functions";
 import TheButton from "../components/TheButton.vue";
 export default {
     components: {
@@ -60,22 +61,14 @@ export default {
     methods: {
         handleSubmit() {
             if (!this.formData.email) {
-                // TODO: show error message on toast
-                // alert("email can not be empty!");
-                this.$eventBus.emit("toast", {
-                    type: "Error",
-                    message: "email can not be empty!",
-                });
+                showErrorMessage("Email can not be empty!");
                 this.$refs.email.focus();
                 return;
             }
             if (this.formData.password.length < 6) {
-                // TODO: show error message on toast
-                // alert("Password must be at least 6 characters long!");
-                this.$eventBus.emit("toast", {
-                    type: "Error",
-                    message: "Password must be at least 6 characters long!",
-                });
+                showErrorMessage(
+                    "Password must be at least 6 characters long!"
+                );
                 this.$refs.password.focus();
                 return;
             }
@@ -84,35 +77,19 @@ export default {
             axios
                 .post(this.base_url + "login", this.formData)
                 .then((res) => {
-                    // console.log(res.data);
                     if (res.data.status == true) {
-                        this.$eventBus.emit("toast", {
-                            type: "Success",
-                            message: res.data.message,
-                        });
+                        showSuccessMessage(res.data.message);
                         localStorage.setItem(
                             "accessToken",
                             res.data.accessToken
                         );
                         this.$router.push("/dashboard");
                     } else {
-                        // console.log(err);
-                        this.$eventBus.emit("toast", {
-                            type: "Error",
-                            message: res.data.message,
-                        });
+                        showErrorMessage(res.data.message);
                     }
                 })
                 .catch((err) => {
-                    console.log(err);
-                    let errorMessage = "Something went wrong";
-                    if (err.response) {
-                        errorMessage = err.message;
-                    }
-                    this.$eventBus.emit("toast", {
-                        type: "Error",
-                        message: errorMessage,
-                    });
+                    showErrorMessage(err);
                 })
                 .finally(() => {
                     this.loggingIn = false;

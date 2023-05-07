@@ -11,6 +11,7 @@
 </template>
 <script>
 import TheToast from "./components/TheToast.vue";
+import { eventBus } from "./utils/eventBus";
 export default {
     components: {
         TheToast,
@@ -19,7 +20,7 @@ export default {
         toasts: [],
     }),
     mounted() {
-        this.$eventBus.on("toast", (data) => {
+        eventBus.on("toast", (data) => {
             this.toasts.push(data);
             this.removeOneToast();
         });

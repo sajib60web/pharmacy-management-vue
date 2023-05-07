@@ -103,6 +103,7 @@
 </template>
 <script>
 import axios from "axios";
+import { showErrorMessage, showSuccessMessage } from "../../utils/functions";
 import TheButton from "../../components/TheButton.vue";
 import TheModal from "../../components/TheModal.vue";
 export default {
@@ -161,32 +162,17 @@ export default {
                     },
                 })
                 .then((res) => {
-                    // console.log(res.data);
                     if (res.data.status == true) {
-                        this.$eventBus.emit("toast", {
-                            type: "Success",
-                            message: res.data.message,
-                        });
+                        showSuccessMessage(res.data.message);
                         this.addModal = false;
                         this.resetForm();
                         this.getAllVendors();
                     } else {
-                        this.$eventBus.emit("toast", {
-                            type: "Error",
-                            message: res.data.message,
-                        });
+                        showErrorMessage(res.data.message);
                     }
                 })
                 .catch((err) => {
-                    // console.log(err);
-                    let errorMessage = "Something went wrong";
-                    if (err.response) {
-                        errorMessage = err.message;
-                    }
-                    this.$eventBus.emit("toast", {
-                        type: "Error",
-                        message: errorMessage,
-                    });
+                    showErrorMessage(err);
                 })
                 .finally(() => {
                     this.adding = false;
@@ -208,31 +194,16 @@ export default {
                     }
                 )
                 .then((res) => {
-                    // console.log(res.data);
                     if (res.data.status == true) {
-                        this.$eventBus.emit("toast", {
-                            type: "Success",
-                            message: res.data.message,
-                        });
+                        showSuccessMessage(res.data.message);
                         this.editModal = false;
                         this.resetForm();
                     } else {
-                        this.$eventBus.emit("toast", {
-                            type: "Error",
-                            message: res.data.message,
-                        });
+                        showErrorMessage(res.data.message);
                     }
                 })
                 .catch((err) => {
-                    // console.log(err);
-                    let errorMessage = "Something went wrong";
-                    if (err.response) {
-                        errorMessage = err.message;
-                    }
-                    this.$eventBus.emit("toast", {
-                        type: "Error",
-                        message: errorMessage,
-                    });
+                    showErrorMessage(err);
                 })
                 .finally(() => {
                     this.editing = false;
@@ -253,24 +224,13 @@ export default {
                     }
                 )
                 .then((res) => {
-                    // console.log(res.data);
-                    this.$eventBus.emit("toast", {
-                        type: "Success",
-                        message: res.data.message,
-                    });
+                    showSuccessMessage(res.data.message);
                     this.resetForm();
                     this.deleteModal = false;
                     this.getAllVendors();
                 })
                 .catch((err) => {
-                    let errorMessage = "Something went wrong";
-                    if (err.response) {
-                        errorMessage = err.message;
-                    }
-                    this.$eventBus.emit("toast", {
-                        type: "Error",
-                        message: errorMessage,
-                    });
+                    showErrorMessage(err);
                 })
                 .finally(() => {
                     this.deleting = false;
