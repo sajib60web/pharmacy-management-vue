@@ -1,6 +1,7 @@
 import { axiosPrivate } from "./axiosInstance";
 
 export default {
+    // Vendors
     getVendors() {
         return axiosPrivate.get("private/vendor");
     },
@@ -14,5 +15,21 @@ export default {
 
     deleteVendor(id) {
         return axiosPrivate.delete("private/vendor/delete/" + id);
+    },
+
+    // Drug
+    getDrugs() {
+        return axiosPrivate.get("private/drug");
+    },
+    addDrug(payload) {
+        return axiosPrivate.post("private/drug/create", payload);
+    },
+
+    updateDrug(payload) {
+        return axiosPrivate.put("private/drug/update/" + payload.id, payload);
+    },
+
+    deleteDrug(id) {
+        return axiosPrivate.delete("private/drug/delete/" + id);
     },
 };
