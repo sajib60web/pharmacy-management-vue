@@ -26,13 +26,21 @@
             </tr>
         </tbody>
     </table>
+    <the-modal v-model="addModal" heading="Add new vendor">
+        <h1>Hello</h1>
+    </the-modal>
 </template>
 <script>
 import TheButton from "../../components/TheButton.vue";
+import TheModal from "../../components/TheModal.vue";
 export default {
     components: {
         TheButton,
+        TheModal,
     },
+    data: () => ({
+        addModal: false,
+    }),
 };
 </script>
 <style></style>
