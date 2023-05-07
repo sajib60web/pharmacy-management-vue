@@ -17,16 +17,29 @@
                 <td>{{ vendor.name }}</td>
                 <td>{{ vendor.description }}</td>
                 <td>
-                    <img src="/img/edit.png" alt="Edit" class="action-icon" />
+                    <img
+                        src="/img/edit.png"
+                        alt="Edit"
+                        class="action-icon"
+                        @click="
+                            selectedVendor = vendor;
+                            editModal = true;
+                        "
+                    />
                     <img
                         src="/img/trash.png"
                         alt="Delete"
                         class="action-icon action-icon--delete ml-3"
+                        @click="
+                            selectedVendor = vendor;
+                            deleteModal = true;
+                        "
                     />
                 </td>
             </tr>
         </tbody>
     </table>
+    <!-- Add Modal -->
     <the-modal v-model="addModal" heading="Add new vendor">
         <form @submit.prevent="addNew">
             <label class="block">Vendor Name</label>
@@ -49,6 +62,44 @@
             <the-button :loading="adding" class="w-100 mt-4"> Add </the-button>
         </form>
     </the-modal>
+    <!-- Edit Modal -->
+    <the-modal v-model="editModal" heading="Edit vendor">
+        <form @submit.prevent="updateVendor">
+            <label class="block">Vendor Name</label>
+            <input
+                type="text"
+                placeholder="Enter vendor name"
+                class="mt-1 w-100"
+                required
+                v-model="selectedVendor.name"
+            />
+
+            <label class="block mt-3">Description</label>
+            <input
+                type="text"
+                placeholder="Write short description"
+                class="mt-1 w-100"
+                required
+                v-model="selectedVendor.description"
+            />
+            <the-button :loading="editing" class="w-100 mt-4">
+                Save Changes
+            </the-button>
+        </form>
+    </the-modal>
+    <!-- Delete Modal -->
+    <the-modal v-model="deleteModal" heading="Are you sure?">
+        <p>
+            Do you really want to delete
+            <strong>{{ selectedVendor.name }}</strong>
+        </p>
+        <the-button class="mt-4" @click="deleteVendor" :loading="deleting">
+            Yes
+        </the-button>
+        <the-button class="ml-4" color="gray" @click="deleteModal = false">
+            No
+        </the-button>
+    </the-modal>
 </template>
 <script>
 import axios from "axios";
@@ -60,12 +111,19 @@ export default {
         TheModal,
     },
     data: () => ({
+        // Modal
         addModal: false,
-        adding: false,
+        editModal: false,
+        deleteModal: false,
+
         newVendor: {
             name: "",
             description: "",
         },
+        adding: false,
+        selectedVendor: {},
+        editing: false,
+        deleting: false,
         vendors: [],
         gettingVendors: false,
     }),
@@ -93,6 +151,7 @@ export default {
                     this.gettingVendors = false;
                 });
         },
+
         addNew() {
             this.adding = true;
             axios
@@ -108,7 +167,9 @@ export default {
                             type: "Success",
                             message: res.data.message,
                         });
+                        this.addModal = false;
                         this.resetForm();
+                        this.getAllVendors();
                     } else {
                         this.$eventBus.emit("toast", {
                             type: "Error",
@@ -131,6 +192,91 @@ export default {
                     this.adding = false;
                 });
         },
+
+        updateVendor() {
+            this.editing = true;
+            axios
+                .post(
+                    this.base_url +
+                        "private/vendor/update/" +
+                        this.selectedVendor.id,
+                    this.selectedVendor,
+                    {
+                        headers: {
+                            authorization: localStorage.getItem("accessToken"),
+                        },
+                    }
+                )
+                .then((res) => {
+                    // console.log(res.data);
+                    if (res.data.status == true) {
+                        this.$eventBus.emit("toast", {
+                            type: "Success",
+                            message: res.data.message,
+                        });
+                        this.editModal = false;
+                        this.resetForm();
+                    } else {
+                        this.$eventBus.emit("toast", {
+                            type: "Error",
+                            message: res.data.message,
+                        });
+                    }
+                })
+                .catch((err) => {
+                    // console.log(err);
+                    let errorMessage = "Something went wrong";
+                    if (err.response) {
+                        errorMessage = err.message;
+                    }
+                    this.$eventBus.emit("toast", {
+                        type: "Error",
+                        message: errorMessage,
+                    });
+                })
+                .finally(() => {
+                    this.editing = false;
+                });
+        },
+
+        deleteVendor() {
+            this.deleting = true;
+            axios
+                .get(
+                    this.base_url +
+                        "private/vendor/delete/" +
+                        this.selectedVendor.id,
+                    {
+                        headers: {
+                            authorization: localStorage.getItem("accessToken"),
+                        },
+                    }
+                )
+                .then((res) => {
+                    // console.log(res.data);
+                    this.$eventBus.emit("toast", {
+                        type: "Success",
+                        message: res.data.message,
+                    });
+                    this.resetForm();
+                    this.deleteModal = false;
+                    this.getAllVendors();
+                })
+                .catch((err) => {
+                    let errorMessage = "Something went wrong";
+                    if (err.response) {
+                        errorMessage = err.message;
+                    }
+                    this.$eventBus.emit("toast", {
+                        type: "Error",
+                        message: errorMessage,
+                    });
+                })
+                .finally(() => {
+                    this.deleting = false;
+                });
+        },
+
         resetForm() {
             this.newVendor = { name: "", description: "" };
         },
