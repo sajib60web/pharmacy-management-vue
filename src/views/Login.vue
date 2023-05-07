@@ -95,11 +95,12 @@ export default {
                             res.data.accessToken
                         );
                         this.$router.push("/dashboard");
+                    } else {
+                        this.$eventBus.emit("toast", {
+                            type: "Error",
+                            message: res.data.message,
+                        });
                     }
-                    this.$eventBus.emit("toast", {
-                        type: "Error",
-                        message: res.data.message,
-                    });
                 })
                 .catch((err) => {
                     console.log(err);

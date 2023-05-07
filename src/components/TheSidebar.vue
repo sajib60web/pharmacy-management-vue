@@ -5,7 +5,6 @@
         </div>
         <div class="sidebar__bottom">
             <div class="sidebar__nav pt-5">
-                <router-link to="/dashboard">Dashboard</router-link>
                 <router-link to="/dashboard/overview">Overview</router-link>
                 <router-link to="/dashboard/drugs">Drugs</router-link>
                 <router-link to="/dashboard/vendors">Vendors</router-link>
