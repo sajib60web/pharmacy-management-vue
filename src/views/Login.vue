@@ -96,6 +96,7 @@ export default {
                         );
                         this.$router.push("/dashboard");
                     } else {
+                        // console.log(err);
                         this.$eventBus.emit("toast", {
                             type: "Error",
                             message: res.data.message,
