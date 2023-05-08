@@ -17,7 +17,6 @@ export const useCartStore = defineStore("cart", {
     },
     actions: {
         add(payload) {
-            console.log(payload);
             if (this.products[payload.id]) {
                 this.products[payload.id].quantity += payload.quantity;
             } else {
