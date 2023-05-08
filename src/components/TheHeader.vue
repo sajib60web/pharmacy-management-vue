@@ -27,6 +27,12 @@ export default {
         showAvatar: false,
         searchString: "",
     }),
+    methods: {
+        logout() {
+            localStorage.removeItem("accessToken");
+            location.href = "/";
+        },
+    },
 };
 </script>
 <style>

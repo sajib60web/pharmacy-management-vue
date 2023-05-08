@@ -7,13 +7,14 @@
                     <h2>User Login</h2>
                 </div>
                 <form action="#" @submit.prevent="handleSubmit">
-                    <label class="block">Email</label>
+                    <label for="email" class="block">Email</label>
                     <input
                         type="email"
+                        name="email"
                         v-model="formData.email"
                         placeholder="Enter your email"
-                        autocomplete="email"
                         required
+                        autocomplete="email"
                         ref="email"
                     />
                     <label class="block mt-3">Password</label>
