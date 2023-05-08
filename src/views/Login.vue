@@ -47,10 +47,12 @@
 </template>
 <script>
 import axios from "axios";
+import { mapState, mapActions } from "pinia";
 import { showErrorMessage, showSuccessMessage } from "../utils/functions";
 import { setPrivateHeaders } from "../service/axiosInstance";
 import TheButton from "../components/TheButton.vue";
 import { infoStore } from "../data/info";
+import { useAuthStore } from "../store/authStore";
 export default {
     components: {
         TheButton,
@@ -63,7 +65,18 @@ export default {
         loggingIn: false,
         projectName: infoStore.projectName,
     }),
+    computed: {
+        ...mapState(useAuthStore, {
+            email: "email",
+            accessToken: "accessToken",
+            refreshToken: "refreshToken",
+            isLoggedIn: "isLoggedIn",
+        }),
+    },
     methods: {
+        ...mapActions(useAuthStore, {
+            login: "login",
+        }),
         handleSubmit() {
             if (!this.formData.email) {
                 showErrorMessage("Email can not be empty!");
@@ -84,6 +97,7 @@ export default {
                 .then((res) => {
                     if (res.data.status == true) {
                         showSuccessMessage(res.data.message);
+                        this.login(res.data);
                         localStorage.setItem(
                             "accessToken",
                             res.data.accessToken
