@@ -55,6 +55,36 @@
                 </tr>
             </tfoot>
         </table>
+        <the-button
+            class="w-100 mt-4"
+            v-if="!enteringCustomerInfo"
+            @click="enteringCustomerInfo = true"
+        >
+            Checkout
+        </the-button>
+        <div v-if="enteringCustomerInfo" class="mt-4">
+            <label for="" class="block">Customer Name</label>
+            <input
+                type="text"
+                placeholder="Enter customer name"
+                v-model="customer"
+                class="w-100"
+            />
+            <label for="" class="block mt-4">Customer Phone</label>
+            <input
+                type="text"
+                placeholder="Enter customer phone"
+                v-model="phone"
+                class="w-100"
+            />
+            <the-button
+                class="w-100 mt-4"
+                @click="confirmNow"
+                :loading="confirming"
+            >
+                Confirm
+            </the-button>
+        </div>
     </div>
 </template>
 <script>
@@ -67,6 +97,12 @@ export default {
     components: {
         TheButton,
     },
+    data: () => ({
+        phone: "",
+        customer: "",
+        enteringCustomerInfo: false,
+        confirming: false,
+    }),
     computed: {
         ...mapState(useCartStore, {
             cartItems: "products",
@@ -76,8 +112,40 @@ export default {
     methods: {
         ...mapActions(useCartStore, {
             removeFromCart: "remove",
-            // crealCart: "clearCart",
+            // clearCart: "clearCart",
         }),
+
+        confirmNow() {
+            const orderData = {
+                customer: this.customer,
+                phone: this.phone,
+                cartItems: this.cartItems,
+            };
+            // console.log(orderData);
+            this.confirming = true;
+
+            privateService
+                .sellDrug(orderData)
+                .then((res) => {
+                    // console.log(res.data);
+                    if (res.data.status == true) {
+                        showSuccessMessage(res.data.message);
+                        this.phone = "";
+                        this.customer = "";
+                        this.enteringCustomerInfo = false;
+                        // this.clearCart();
+                        this.$router.push("/dashboard/selling-history");
+                    } else {
+                        showErrorMessage(res.data.message);
+                    }
+                })
+                .catch((err) => {
+                    showErrorMessage(err);
+                })
+                .finally(() => {
+                    this.confirming = false;
+                });
+        },
     },
 };
 </script>

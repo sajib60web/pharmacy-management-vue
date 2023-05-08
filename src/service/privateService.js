@@ -38,4 +38,8 @@ export default {
             searchString: searchString,
         });
     },
+
+    sellDrug(payload) {
+        return axiosPrivate.post("private/drug/sell", payload);
+    },
 };
