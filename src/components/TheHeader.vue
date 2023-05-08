@@ -83,10 +83,12 @@
     </the-modal>
 </template>
 <script>
+import { mapActions } from "pinia";
 import privateService from "../service/privateService";
 import TheModal from "./TheModal.vue";
 import TheButton from "./TheButton.vue";
 import { showErrorMessage } from "../utils/functions";
+import { useCartStore } from "../store/cartStore";
 export default {
     components: {
         TheModal,
@@ -103,6 +105,10 @@ export default {
         quantity: "",
     }),
     methods: {
+        ...mapActions(useCartStore, {
+            addToCartStore: "add",
+        }),
+
         logout() {
             localStorage.removeItem("accessToken");
             location.href = "/";
@@ -129,14 +135,19 @@ export default {
         },
 
         addToCart() {
-            // console.log(this.selectedDrug);
-            // console.log(this.quantity);
             if (!this.quantity) {
                 showErrorMessage("Please enter quantity");
                 this.$refs.qtyInput.focus();
             } else {
-                console.log("Adding to cart.");
+                // console.log("Adding to cart.");
+                // Implement add to cart feature
+                this.addToCartStore({
+                    ...this.selectedDrug,
+                    quantity: this.quantity,
+                });
                 this.detailsModal = false;
+                this.quantity = 1;
+                this.searchString = "";
             }
         },
 

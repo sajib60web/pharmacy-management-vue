@@ -18,11 +18,68 @@
                     </th>
                 </tr>
             </thead>
+            <tbody>
+                <tr v-for="(item, key) in cartItems" :key="key">
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.weight }}</td>
+                    <td>{{ item.price }}</td>
+                    <td>
+                        <input
+                            class="qty-input"
+                            type="number"
+                            v-model="item.quantity"
+                        />
+                    </td>
+
+                    <td class="text-right">
+                        {{ item.price * item.quantity }}
+                    </td>
+                    <td>
+                        <img
+                            src="/img/trash.png"
+                            class="action-icon action-icon--delete-small"
+                            alt=""
+                            @click="removeFromCart(item.id)"
+                        />
+                    </td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="6">
+                        <div class="text-right">
+                            <hr />
+                            <strong>Grand Total : {{ totalPrice }} </strong>
+                        </div>
+                    </td>
+                </tr>
+            </tfoot>
         </table>
     </div>
 </template>
 <script>
-export default {};
+import { mapState, mapActions } from "pinia";
+import { useCartStore } from "../store/cartStore";
+import TheButton from "./TheButton.vue";
+import privateService from "../service/privateService";
+import { showErrorMessage, showSuccessMessage } from "../utils/functions";
+export default {
+    components: {
+        TheButton,
+    },
+    computed: {
+        ...mapState(useCartStore, {
+            cartItems: "products",
+            totalPrice: "totalPrice",
+        }),
+    },
+    methods: {
+        ...mapActions(useCartStore, {
+            removeFromCart: "remove",
+            // crealCart: "clearCart",
+        }),
+    },
+};
 </script>
 <style>
 .the-cart {
