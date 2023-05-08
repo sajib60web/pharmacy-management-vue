@@ -5,7 +5,25 @@
                 type="text"
                 class="the-header__search"
                 placeholder="Search..."
+                @focus="searchFocused = true"
+                @blur="searchFocused = false"
+                v-model="searchString"
             />
+            <div class="search-results" v-show="searchFocused">
+                <table>
+                    <tr
+                        class="result-item"
+                        v-for="drug in drugs"
+                        :key="drug.name"
+                        @click="handleClick(drug)"
+                    >
+                        <td>{{ drug.name }}</td>
+                        <td>{{ drug.weight }}</td>
+                        <td>{{ drug.vendor }}</td>
+                        <td>{{ drug.quantity }}</td>
+                    </tr>
+                </table>
+            </div>
         </div>
         <div class="avatar-wrapper">
             <div class="avatar" @click="showAvatar = !showAvatar">T</div>
@@ -22,24 +40,49 @@
     </div>
 </template>
 <script>
+import privateService from "../service/privateService";
 export default {
     data: () => ({
         showAvatar: false,
         searchString: "",
+        drugs: [],
+        searchFocused: false,
+        lastSearchTime: 0,
     }),
     methods: {
         logout() {
             localStorage.removeItem("accessToken");
             location.href = "/";
         },
+        searchDrug(searchString, lastSearchTime) {
+            privateService
+                .searchDrug(searchString)
+                .then((res) => {
+                    if (lastSearchTime === this.lastSearchTime) {
+                        console.log("UI updated");
+                        this.drugs = res.data;
+                    }
+                })
+                .catch((e) => {
+                    console.log(e);
+                });
+        },
+    },
+    watch: {
+        searchString(newValue) {
+            if (newValue) {
+                this.lastSearchTime = Date.now();
+                this.searchDrug(newValue, this.lastSearchTime);
+            } else {
+                this.drugs = [];
+            }
+        },
     },
 };
 </script>
 <style>
 .the-header {
-    /* background-color: rgb(117, 20, 129); */
     padding: 9px 22px;
-    /* color: rgb(221, 221, 221); */
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -47,7 +90,6 @@ export default {
 }
 
 .the-header__search {
-    /* width: 555px; */
     width: 200%;
 }
 
